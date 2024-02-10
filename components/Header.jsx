@@ -1,3 +1,5 @@
+"use client";
+
 import { ModeToggle } from "./DarkModeSwitch";
 
 const Header = () => {
