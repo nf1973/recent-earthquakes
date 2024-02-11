@@ -6,6 +6,7 @@ import Loading from "@/components/Loading";
 import Accreditation from "@/components/Accreditation";
 
 import dynamic from "next/dynamic";
+import LargestEarthquake from "@/components/LargestEarthquake";
 const DynamicWorldMap = dynamic(() => import("@/components/WorldMap"), {
   loading: () => <p>Loading...</p>,
 });
@@ -58,6 +59,9 @@ export default function Home() {
 
   return data.length > 0 ? (
     <main className="w-7xl max-w-7xl mx-auto flex flex-col items-center justify-start min-h-screen">
+      <div className="flex flex-col lg:flex-row w-full lg:gap-4 mx-auto place-items-center">
+        <LargestEarthquake data={data} />
+      </div>
       <div className="flex flex-col lg:flex-row w-full lg:gap-4 mx-auto place-items-center">
         <div className="w-5/6 lg:w-2/3 h-96 ml-2 mr-2 lg:mr-0">
           <DynamicWorldMap data={data} />

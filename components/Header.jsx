@@ -4,11 +4,11 @@ import { ModeToggle } from "./DarkModeSwitch";
 
 const Header = () => {
   return (
-    <header className="py-6 px-2 w-full mx-auto">
+    <header className="py-6  w-full mx-auto">
       <div className="w-7xl max-w-7xl mx-auto flex items-center justify-between">
         <a
           href="/"
-          className="my-0 flex items-center text-xl md:text-3xl font-semibold  no-underline hover:text-slate-200"
+          className="my-0 flex items-center px-2 text-xl md:text-3xl font-semibold  no-underline hover:text-slate-200"
         >
           <span>Recent Earthquakes</span>
         </a>
