@@ -24,9 +24,43 @@ const LargestEarthquake = ({ data }) => {
         There have been {data.length} M2.5+ earthquakes in the past 24 hours
       </p>
       <p>
-        Largest Earthquake in the Past 24 Hours: {data[0].properties.place} at{" "}
-        {formatDate(data[0].properties.time)} (M
-        {data[0].properties.mag.toFixed(1)})
+        Largest Earthquake in the Past 24 Hours:{" "}
+        {
+          data.reduce((prev, current) =>
+            prev.properties.mag === current.properties.mag
+              ? prev.properties.time > current.properties.time
+                ? prev
+                : current
+              : prev.properties.mag > current.properties.mag
+              ? prev
+              : current
+          ).properties.place
+        }{" "}
+        at{" "}
+        {formatDate(
+          data.reduce((prev, current) =>
+            prev.properties.mag === current.properties.mag
+              ? prev.properties.time > current.properties.time
+                ? prev
+                : current
+              : prev.properties.mag > current.properties.mag
+              ? prev
+              : current
+          ).properties.time
+        )}{" "}
+        (M
+        {data
+          .reduce((prev, current) =>
+            prev.properties.mag === current.properties.mag
+              ? prev.properties.time > current.properties.time
+                ? prev
+                : current
+              : prev.properties.mag > current.properties.mag
+              ? prev
+              : current
+          )
+          .properties.mag.toFixed(1)}
+        )
       </p>
     </div>
   );
