@@ -1,74 +1,52 @@
-"use client";
+"use client"
 
-import {
-  MapContainer,
-  TileLayer,
-  Popup,
-  LayerGroup,
-  CircleMarker,
-} from "react-leaflet";
-import "leaflet-defaulticon-compatibility";
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import "leaflet/dist/leaflet.css";
+import { useEffect, useRef } from "react"
+import L from "leaflet"
+import "leaflet/dist/leaflet.css"
 
 export default function MostRecentMap({ data }) {
-  const fillRedOptions = { fillColor: "red" };
+  const mapRef = useRef(null)
+
+  useEffect(() => {
+    if (!data || !data.length) return
+
+    const lat = data[0].geometry.coordinates[1]
+    const lng = data[0].geometry.coordinates[0]
+
+    const map = L.map(mapRef.current).setView([lat, lng], 3)
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map)
+
+    const marker = L.circleMarker([lat, lng], {
+      radius: 10,
+      fillColor: "red",
+      color: "#fff",
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8,
+    }).addTo(map)
+
+    marker.bindPopup(`
+      <div>
+        <b>Time:</b> ${new Date(data[0].properties.time).toLocaleString()}<br/>
+        <b>Magnitude:</b> ${data[0].properties.mag.toFixed(1)}<br/>
+        <b>Location:</b> ${data[0].properties.place}<br/>
+        <a href="${data[0].properties.url}" target="_blank">More info</a>
+      </div>
+    `)
+
+    return () => {
+      map.remove()
+    }
+  }, [data])
+
   return (
-    <>
-      <h2 className="text-sm">Most Recent Earthquake (M2.5+)</h2>
-      <MapContainer
-        className="h-full"
-        center={[
-          data[0].geometry.coordinates[1],
-          data[0].geometry.coordinates[0],
-        ]}
-        zoom={3}
-        scrollWheelZoom={true}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-
-        <LayerGroup>
-          {data.slice(0, 1).map((row, index) => (
-            <CircleMarker
-              key={index}
-              center={[
-                row.geometry.coordinates[1],
-                row.geometry.coordinates[0],
-              ]}
-              pathOptions={fillRedOptions}
-              radius={10}
-              fillColor="red"
-              color="#fff"
-              weight={1}
-              opacity={1}
-              fillOpacity={0.8}
-            >
-              <Popup>
-                <div>
-                  <b>Time:</b> {new Date(row.properties.time).toLocaleString()}
-                </div>
-                <div>
-                  <b>Magnitude:</b> {row.properties.mag.toFixed(1)}
-                </div>
-                <div>
-                  <b>Location:</b> {row.properties.place}
-                </div>
-
-                <div className="mt-1">
-                  <a href={row.properties.url} target="_blank">
-                    <p className="text-slate-800 hover:text-slate-600">
-                      More info
-                    </p>
-                  </a>
-                </div>
-              </Popup>
-            </CircleMarker>
-          ))}
-        </LayerGroup>
-      </MapContainer>
-    </>
-  );
+    <div className="w-full h-full">
+      <h2 className="text-sm mb-2">Most Recent Earthquake (M2.5+)</h2>
+      <div ref={mapRef} className="w-full h-full" />
+    </div>
+  )
 }
